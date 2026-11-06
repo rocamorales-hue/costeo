@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Costeador de bebidas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f4f3;--sf:#fff;--ink:#12312b;--mu:#5c6f6a;--ln:#d9e0de;--ac:#12312b;--ok:#1f8a5b;--wa:#c98b1f;--ba:#c4452f;
+--c1:#12312b;--c2:#4f7f73;--c3:#c98b1f;--c4:#b9c4c0;--c5:#1f8a5b;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1a18;--sf:#15262300;--sf:#152623;--ink:#e6efec;--mu:#92a8a2;--ln:#26403b;--ac:#7fd1b4;--ok:#4fc08d;--wa:#e0a93f;--ba:#ef7a63;
+--c1:#7fd1b4;--c2:#3f7a6c;--c3:#e0a93f;--c4:#3a4f4a;--c5:#4fc08d;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.5 Figtree,system-ui,sans-serif}
+h1,h2,.k b{font-family:'Bricolage Grotesque',Georgia,serif}
+header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 24px;border-bottom:1px solid var(--ln)}
+h1{font-size:24px;margin:0;font-weight:800;letter-spacing:-.02em}
+#st{color:var(--mu);font-size:13px;margin-left:auto}#st.e{color:var(--ba)}
+nav{display:flex;gap:4px;padding:0 24px;border-bottom:1px solid var(--ln)}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:12px 14px;font:600 15px Figtree,sans-serif;color:var(--mu);cursor:pointer}
+nav button.on{color:var(--ink);border-color:var(--ac)}
+main{padding:24px;max-width:1200px;margin:auto}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+.k div{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:12px 16px}
+.k b{display:block;font-size:28px;font-weight:800}.k span{color:var(--mu);font-size:13px}
+.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+input,select{font:inherit;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:6px;padding:8px 10px;min-width:0}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.bar input[type=search]{flex:1;min-width:200px}
+.btn{font:600 14px Figtree,sans-serif;border:1px solid var(--ac);background:var(--ac);color:var(--bg);border-radius:6px;padding:8px 14px;cursor:pointer}
+.btn.g{background:none;color:var(--ink);border-color:var(--ln)}.btn.d{background:none;color:var(--ba);border-color:var(--ln)}.btn.s{padding:4px 9px;font-size:13px}
+.tw{overflow-x:auto;background:var(--sf);border:1px solid var(--ln);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--ln);white-space:nowrap}
+th{font-weight:600;color:var(--mu);font-size:13px}tr:last-child td{border:0}
+td.n,th.n{text-align:right}td.a{text-align:right}
+.badge{padding:2px 9px;border-radius:99px;font-weight:600;font-size:13px;color:#fff}
+.ok{background:var(--ok)}.wa{background:var(--wa)}.ba{background:var(--ba)}
+.split{display:flex;height:10px;width:150px;border-radius:5px;overflow:hidden;background:var(--c4)}
+.split i{display:block;height:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mu);margin:0 0 12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+.empty{padding:32px;text-align:center;color:var(--mu)}
+dialog{border:1px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--ink);padding:22px;width:min(640px,94vw);max-height:92vh}
+dialog::backdrop{background:#0008}
+h2{margin:0 0 14px;font-size:20px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:10px}.f label{display:flex;flex-direction:column;font-size:13px;color:var(--mu);gap:3px}
+.f .w{grid-column:1/-1}
+.rw{display:grid;grid-template-columns:1fr 90px auto 28px;gap:6px;align-items:center;margin-bottom:6px}
+.rw small{color:var(--mu);text-align:right}
+.pv{background:var(--bg);border-radius:8px;padding:12px;margin:14px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:13px}
+.pv b{display:block;font-size:17px}
+.act{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+@media(max-width:560px){.f{grid-template-columns:1fr}.pv{grid-template-columns:1fr 1fr}main{padding:14px}}
+</style>
+</head>
+<body>
+<header><h1>Costeador de bebidas</h1><button class="btn g s" onclick="openConn()">Conexión</button><span id="st">Sin conexión</span></header>
+<nav id="nav"></nav>
+<main id="app"></main>
+<dialog id="dlg"></dialog>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'$'+(+n||0).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct=n=>((+n||0)*100).toFixed(1)+'%';
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+let S={Insumos:[],Bebidas:[],Recetas:[],Config:{}},tab='beb',draft=null;
+const conn=()=>({url:localStorage.getItem('cs_url')||'',key:localStorage.getItem('cs_key')||''});
+const setSt=(t,e)=>{const s=$('#st');s.textContent=t;s.className=e?'e':''};
+
+async function load(){
+  const {url,key}=conn(); if(!url){render();return openConn()}
+  setSt('Sincronizando...');
+  try{const r=await(await fetch(url+'?key='+encodeURIComponent(key))).json();
+    if(!r.ok)throw new Error(r.error);S=r.data;setSt('Sincronizado');render()}
+  catch(e){setSt('Error: '+e.message,1);render()}
+}
+async function post(b){
+  const {url,key}=conn();setSt('Guardando...');
+  try{const r=await(await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({...b,key})})).json();
+    if(!r.ok)throw new Error(r.error);await load();return true}
+  catch(e){setSt('Error: '+e.message,1);alert(e.message);return false}
+}
+
+/* ---------- Cálculos ---------- */
+const C=()=>({iva:+S.Config.iva||0,mo:(+S.Config.margen_objetivo||0)/100,ind:+S.Config.indirectos||0,com:+S.Config.comision||0});
+const costoU=i=>{const m=1-(+i.merma_pct||0)/100;return (+i.precio_compra||0)/(+i.cantidad_compra||1)/(m>0?m:1)};
+function calc(b,items){
+  const c=C();
+  items=items||S.Recetas.filter(r=>r.bebida_id===b.id);
+  const ing=items.reduce((a,r)=>{const i=S.Insumos.find(x=>x.id===r.insumo_id);return a+(i?costoU(i)*(+r.cantidad||0):0)},0);
+  const indir=ing*c.ind/100,costo=ing+indir,pv=+b.precio_venta||0,neto=pv/(1+c.iva/100),
+        com=pv*c.com/100,iva=pv-neto,util=neto-costo-com,margen=neto?util/neto:0;
+  const den=1-c.mo-c.com/100*(1+c.iva/100),sug=den>0?costo/den*(1+c.iva/100):0;
+  return {ing,indir,costo,pv,neto,com,iva,util,margen,fc:neto?ing/neto:0,sug};
+}
+const cls=m=>{const mo=C().mo;return m>=mo?'ok':m>=mo-.1?'wa':'ba'};
+function split(x){
+  const t=x.pv||1,w=v=>Math.max(0,v/t*100).toFixed(2)+'%';
+  return `<div class="split" title="Ingredientes ${money(x.ing)} · Indirectos ${money(x.indir)} · Comisión ${money(x.com)} · IVA ${money(x.iva)} · Utilidad ${money(x.util)}">
+  <i style="width:${w(x.ing)};background:var(--c1)"></i><i style="width:${w(x.indir)};background:var(--c2)"></i>
+  <i style="width:${w(x.com)};background:var(--c3)"></i><i style="width:${w(x.iva)};background:var(--c4)"></i>
+  <i style="width:${w(Math.max(x.util,0))};background:var(--c5)"></i></div>`;
+}
+
+/* ---------- Vistas ---------- */
+function render(){
+  $('#nav').innerHTML=[['beb','Bebidas'],['ins','Insumos'],['cfg','Ajustes']]
+    .map(([k,l])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';render()">${l}</button>`).join('');
+  $('#app').innerHTML={beb:vBeb,ins:vIns,cfg:vCfg}[tab]();
+}
+function filt(el){const q=el.value.toLowerCase();document.querySelectorAll('#tb tr').forEach(r=>r.hidden=!r.textContent.toLowerCase().includes(q))}
+
+function vBeb(){
+  const rows=S.Bebidas.map(b=>({b,x:calc(b)})).sort((a,z)=>a.x.margen-z.x.margen);
+  const act=rows.filter(r=>r.b.activo!==false&&r.b.activo!=='FALSE');
+  const avg=act.length?act.reduce((a,r)=>a+r.x.margen,0)/act.length:0;
+  const low=act.filter(r=>r.x.margen<C().mo).length;
+  const k=`<div class="k"><div><b>${S.Bebidas.length}</b><span>bebidas</span></div>
+    <div><b>${pct(avg)}</b><span>margen promedio (objetivo ${pct(C().mo)})</span></div>
+    <div><b>${low}</b><span>bajo el margen objetivo</span></div>
+    <div><b>${S.Insumos.length}</b><span>insumos</span></div></div>`;
+  const tb=rows.map(({b,x})=>`<tr><td><b>${esc(b.nombre)}</b><br><small>${esc(b.categoria)} · ${esc(b.tamano)}</small></td>
+    <td class="n">${money(x.costo)}</td><td class="n">${money(x.pv)}</td><td class="n">${money(x.util)}</td>
+    <td><span class="badge ${cls(x.margen)}">${pct(x.margen)}</span></td><td class="n">${pct(x.fc)}</td>
+    <td class="n">${money(x.sug)}</td><td>${split(x)}</td>
+    <td class="a"><button class="btn g s" onclick="editBeb('${b.id}')">Editar</button>
+    <button class="btn g s" onclick="dupBeb('${b.id}')">Duplicar</button>
+    <button class="btn d s" onclick="del('Bebidas','${b.id}','${esc(b.nombre)}')">Borrar</button></td></tr>`).join('');
+  return k+`<div class="bar"><input type="search" placeholder="Buscar bebida" oninput="filt(this)">
+    <button class="btn" onclick="editBeb()">Nueva bebida</button></div>
+    <p class="legend"><span><i style="background:var(--c1)"></i>Ingredientes</span><span><i style="background:var(--c2)"></i>Indirectos</span>
+    <span><i style="background:var(--c3)"></i>Comisión</span><span><i style="background:var(--c4)"></i>IVA</span><span><i style="background:var(--c5)"></i>Utilidad</span></p>
+    <div class="tw"><table><thead><tr><th>Bebida</th><th class="n">Costo</th><th class="n">Precio</th><th class="n">Utilidad</th><th>Margen</th><th class="n">Food cost</th><th class="n">Precio sugerido</th><th>Desglose del precio</th><th></th></tr></thead>
+    <tbody id="tb">${tb}</tbody></table>${rows.length?'':'<div class="empty">Aún no hay bebidas. Crea la primera con "Nueva bebida".</div>'}</div>`;
+}
+
+function vIns(){
+  const tb=S.Insumos.map(i=>`<tr><td><b>${esc(i.nombre)}</b><br><small>${esc(i.categoria)}</small></td>
+    <td>${money(i.precio_compra)} por ${+i.cantidad_compra} ${esc(i.unidad)}</td><td class="n">${+i.merma_pct||0}%</td>
+    <td class="n">${costoU(i).toFixed(4)} / ${esc(i.unidad)}</td><td>${esc(i.proveedor)}</td>
+    <td class="a"><button class="btn g s" onclick="editIns('${i.id}')">Editar</button>
+    <button class="btn d s" onclick="del('Insumos','${i.id}','${esc(i.nombre)}')">Borrar</button></td></tr>`).join('');
+  return `<div class="bar"><input type="search" placeholder="Buscar insumo" oninput="filt(this)"><button class="btn" onclick="editIns()">Nuevo insumo</button></div>
+  <div class="tw"><table><thead><tr><th>Insumo</th><th>Compra</th><th class="n">Merma</th><th class="n">Costo real unitario</th><th>Proveedor</th><th></th></tr></thead>
+  <tbody id="tb">${tb}</tbody></table>${S.Insumos.length?'':'<div class="empty">Registra tus insumos: café, leche, jarabes, vasos.</div>'}</div>`;
+}
+
+function vCfg(){
+  const c=S.Config,f=(k,l)=>`<label>${l}<input type="number" step="0.01" id="c_${k}" value="${+c[k]||0}"></label>`;
+  return `<h2>Parámetros de costeo</h2><div class="f" style="max-width:520px">
+  ${f('iva','IVA (%)')}${f('margen_objetivo','Margen objetivo (% sobre precio sin IVA)')}
+  ${f('indirectos','Costos indirectos (% sobre ingredientes: agua, luz, gas, merma de operación)')}${f('comision','Comisión de terminal (% sobre cobro)')}</div>
+  <div class="act" style="max-width:520px"><button class="btn" onclick="saveCfg()">Guardar ajustes</button></div>`;
+}
+async function saveCfg(){
+  for(const k of ['iva','margen_objetivo','indirectos','comision'])
+    if(!await post({op:'upsert',sheet:'Config',row:{clave:k,valor:+$('#c_'+k).value||0}}))return;
+}
+
+/* ---------- Diálogos ---------- */
+const dlg=$('#dlg');
+function openConn(){const c=conn();dlg.innerHTML=`<h2>Conexión</h2><div class="f">
+  <label class="w">URL de la aplicación web (Apps Script)<input id="u" value="${esc(c.url)}" placeholder="https://script.google.com/macros/s/.../exec"></label>
+  <label class="w">Clave (API_KEY)<input id="k" type="password" value="${esc(c.key)}"></label></div>
+  <div class="act"><button class="btn g" onclick="dlg.close()">Cancelar</button><button class="btn" onclick="saveConn()">Conectar</button></div>`;dlg.showModal()}
+function saveConn(){localStorage.setItem('cs_url',$('#u').value.trim());localStorage.setItem('cs_key',$('#k').value.trim());dlg.close();load()}
+
+function editIns(id){
+  const i=S.Insumos.find(x=>x.id===id)||{id:uid('i'),unidad:'ml',merma_pct:0};
+  const t=(k,l,ty='text',w='')=>`<label class="${w}">${l}<input id="f_${k}" type="${ty}" ${ty==='number'?'step="any"':''} value="${esc(i[k])}"></label>`;
+  dlg.innerHTML=`<h2>${id?'Editar':'Nuevo'} insumo</h2><div class="f">${t('nombre','Nombre','text','w')}${t('categoria','Categoría')}
+  <label>Unidad<select id="f_unidad">${['ml','g','pza'].map(u=>`<option ${i.unidad===u?'selected':''}>${u}</option>`).join('')}</select></label>
+  ${t('precio_compra','Precio de compra ($)','number')}${t('cantidad_compra','Cantidad que trae esa compra (en la unidad)','number')}
+  ${t('merma_pct','Merma (%)','number')}${t('proveedor','Proveedor')}</div>
+  <div class="act"><button class="btn g" onclick="dlg.close()">Cancelar</button><button class="btn" onclick="saveIns('${i.id}')">Guardar insumo</button></div>`;dlg.showModal();
+}
+async function saveIns(id){
+  const g=k=>$('#f_'+k).value,row={id,nombre:g('nombre').trim(),categoria:g('categoria'),unidad:g('unidad'),
+    precio_compra:+g('precio_compra'),cantidad_compra:+g('cantidad_compra'),merma_pct:+g('merma_pct'),proveedor:g('proveedor'),actualizado:new Date().toISOString()};
+  if(!row.nombre||!(row.cantidad_compra>0))return alert('Escribe un nombre y una cantidad de compra mayor a 0.');
+  if(await post({op:'upsert',sheet:'Insumos',row}))dlg.close();
+}
+
+function editBeb(id){
+  const b=S.Bebidas.find(x=>x.id===id)||{id:uid('b'),activo:true,precio_venta:0};
+  draft={b:{...b},items:S.Recetas.filter(r=>r.bebida_id===b.id).map(r=>({...r}))};
+  dlg.innerHTML=`<h2>${id?'Editar':'Nueva'} bebida</h2><div class="f">
+  <label class="w">Nombre<input id="b_nombre" value="${esc(b.nombre)}"></label>
+  <label>Categoría<input id="b_categoria" value="${esc(b.categoria)}" placeholder="Café caliente, Frappé..."></label>
+  <label>Tamaño<input id="b_tamano" value="${esc(b.tamano)}" placeholder="12 oz"></label>
+  <label>Precio de venta (con IVA)<input id="b_precio" type="number" step="any" value="${+b.precio_venta||0}" oninput="prev()"></label>
+  <label>Estado<select id="b_activo"><option value="1">Activa</option><option value="0" ${b.activo===false||b.activo==='FALSE'?'selected':''}>Inactiva</option></select></label></div>
+  <h2 style="margin-top:18px;font-size:16px">Receta</h2><div id="rows"></div>
+  <button class="btn g s" onclick="addRow()">Agregar ingrediente</button><div class="pv" id="pv"></div>
+  <div class="act"><button class="btn g" onclick="dlg.close()">Cancelar</button><button class="btn" onclick="saveBeb()">Guardar bebida</button></div>`;
+  rows();prev();dlg.showModal();
+}
+function rows(){
+  $('#rows').innerHTML=draft.items.map((r,n)=>{const i=S.Insumos.find(x=>x.id===r.insumo_id);
+    return `<div class="rw"><select onchange="draft.items[${n}].insumo_id=this.value;rows();prev()"><option value="">Elige insumo</option>
+    ${S.Insumos.map(x=>`<option value="${x.id}" ${x.id===r.insumo_id?'selected':''}>${esc(x.nombre)}</option>`).join('')}</select>
+    <input type="number" step="any" min="0" value="${r.cantidad}" oninput="draft.items[${n}].cantidad=+this.value;prev()">
+    <small>${i?esc(i.unidad):''} · ${i?money(costoU(i)*r.cantidad):''}</small>
+    <button class="btn d s" onclick="draft.items.splice(${n},1);rows();prev()" aria-label="Quitar">×</button></div>`}).join('');
+}
+function addRow(){draft.items.push({id:uid('r'),insumo_id:'',cantidad:0});rows()}
+function prev(){
+  const x=calc({precio_venta:+$('#b_precio').value},draft.items);
+  $('#pv').innerHTML=[['Costo total',money(x.costo)],['Utilidad',money(x.util)],['Margen',pct(x.margen)],
+    ['Food cost',pct(x.fc)],['Precio sugerido',money(x.sug)],['Comisión + IVA',money(x.com+x.iva)]].map(([l,v])=>`<div>${l}<b>${v}</b></div>`).join('');
+}
+async function saveBeb(){
+  const b={id:draft.b.id,nombre:$('#b_nombre').value.trim(),categoria:$('#b_categoria').value,tamano:$('#b_tamano').value,
+    precio_venta:+$('#b_precio').value||0,activo:$('#b_activo').value==='1'};
+  if(!b.nombre)return alert('Escribe el nombre de la bebida.');
+  const items=draft.items.filter(r=>r.insumo_id&&r.cantidad>0);
+  if(await post({op:'upsert',sheet:'Bebidas',row:b})&&await post({op:'receta',bebida_id:b.id,items}))dlg.close();
+}
+async function dupBeb(id){
+  const b=S.Bebidas.find(x=>x.id===id),nid=uid('b');
+  if(await post({op:'upsert',sheet:'Bebidas',row:{...b,id:nid,nombre:b.nombre+' (copia)'}}))
+    await post({op:'receta',bebida_id:nid,items:S.Recetas.filter(r=>r.bebida_id===id).map(r=>({id:uid('r'),insumo_id:r.insumo_id,cantidad:r.cantidad}))});
+}
+async function del(sheet,id,n){if(confirm('¿Borrar "'+n+'"? Esta acción no se puede deshacer.'))await post({op:'delete',sheet,id})}
+
+load();
+</script>
+</body>
+</html>
